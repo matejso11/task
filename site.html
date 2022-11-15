@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bitcoin price</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="script.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="wrap">
+        <div class="container">
+            <div class="data-container">
+                <div>
+                    <h1 class="title">Bitcoin</h1>
+
+                    <div class="currency-container">
+                        <div class="currency-item active" onclick="changeCurrency(this,0)">EUR</div>
+                        <div class="currency-item" onclick="changeCurrency(this,1)">USD</div>
+                        <div class="currency-item" onclick="changeCurrency(this,2)">GBP</div>
+                    </div>
+                </div>
+                <div>
+                    <div id="priceTextEUR" class="price-text"></div>
+                    <div id="priceTextUSD" class="price-text"></div>
+                    <div id="priceTextGBP" class="price-text"></div>
+                </div>
+            </div>
+
+            <div id="chartEUR"></div>
+            <div id="chartUSD"></div>
+            <div id="chartGBP"></div>
+        </div>
+    </div>
+</body>
+
+</html>
