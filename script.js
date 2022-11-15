@@ -8,7 +8,7 @@ $(function () {
 
     $.getJSON("https://api.coindesk.com/v1/bpi/currentprice.json", function (data) {
         //dataPoints.push({ x: new Date(data.time.updated), y: data.bpi.EUR.rate_float });
-        var date = new Date(data.time.updated);
+        var date = new Date();
 
         $('#priceTextEUR').text(data.bpi.EUR.rate_float.toFixed(2) + " €");
         $('#priceTextUSD').text(data.bpi.USD.rate_float.toFixed(2) + " $");
@@ -216,7 +216,7 @@ function changeCurrency(el, choice) {
 
 function updateChart() {
     $.getJSON("https://api.coindesk.com/v1/bpi/currentprice.json", function (data) {
-        var date = new Date(data.time.updated);
+        var date = new Date();
 
         $('#priceTextEUR').text(data.bpi.EUR.rate_float.toFixed(2) + " €");
         $('#priceTextUSD').text(data.bpi.USD.rate_float.toFixed(2) + " $");
