@@ -4,245 +4,157 @@ var chartGBP;
 var currencyOption = 0;
 var currencySymbol = ['€', '$', '£'];
 
+var cardsCount = 0;
+var chartsList = [];
+
+var baseUrl = "https://rest.coinapi.io/v1/exchangerate/";
+var apiKey = "4347A2CC-DFA3-41CD-98B4-6EE8B04C7656";
+
 $(function () {
-
-    $.getJSON("https://api.coindesk.com/v1/bpi/currentprice.json", function (data) {
-        //dataPoints.push({ x: new Date(data.time.updated), y: data.bpi.EUR.rate_float });
-        var date = new Date();
-
-        $('#priceTextEUR').text(data.bpi.EUR.rate_float.toFixed(2) + " €");
-        $('#priceTextUSD').text(data.bpi.USD.rate_float.toFixed(2) + " $");
-        $('#priceTextGBP').text(data.bpi.GBP.rate_float.toFixed(2) + " £");
-
-        var optionsEUR = {
-            series: [{
-                name: "Bitcoin index",
-                data: [[date.getTime(), data.bpi.EUR.rate_float]]
-            }],
-            chart: {
-                height: 250,
-                type: "line",
-                stacked: true,
-                animations: {
-                    enabled: true,
-                    easing: "linear",
-                    dynamicAnimation: {
-                        speed: 1000
-                    }
-                },
-                toolbar: {
-                    show: false
-                },
-                zoom: {
-                    enabled: false
-                }
-            },
-            dataLabels: {
-                enabled: false
-            },
-            stroke: {
-                curve: "straight",
-                width: 5
-            },
-            grid: {
-                padding: {
-                    left: 0,
-                    right: 0
-                }
-            },
-            markers: {
-                size: 0,
-                hover: {
-                    size: 0
-                }
-            },
-            xaxis: {
-                type: "datetime",
-                range: 2700000
-            },
-            legend: {
-                show: false
-            },
-        };
-
-        chartEUR = new ApexCharts(document.querySelector("#chartEUR"), optionsEUR);
-        chartEUR.render();
-
-        var optionsUSD = {
-            series: [{
-                name: "Bitcoin index",
-                data: [[date.getTime(), data.bpi.USD.rate_float]]
-            }],
-            chart: {
-                height: 250,
-                type: "line",
-                stacked: true,
-                animations: {
-                    enabled: true,
-                    easing: "linear",
-                    dynamicAnimation: {
-                        speed: 1000
-                    }
-                },
-                toolbar: {
-                    show: false
-                },
-                zoom: {
-                    enabled: false
-                }
-            },
-            dataLabels: {
-                enabled: false
-            },
-            stroke: {
-                curve: "straight",
-                width: 5
-            },
-            grid: {
-                padding: {
-                    left: 0,
-                    right: 0
-                }
-            },
-            markers: {
-                size: 0,
-                hover: {
-                    size: 0
-                }
-            },
-            xaxis: {
-                type: "datetime",
-                range: 2700000
-            },
-            legend: {
-                show: false
-            },
-        };
-
-        chartUSD = new ApexCharts(document.querySelector("#chartUSD"), optionsUSD);
-        chartUSD.render();
-
-        var optionsGBP = {
-            series: [{
-                name: "Bitcoin index",
-                data: [[date.getTime(), data.bpi.GBP.rate_float]]
-            }],
-            chart: {
-                height: 250,
-                type: "line",
-                stacked: true,
-                animations: {
-                    enabled: true,
-                    easing: "linear",
-                    dynamicAnimation: {
-                        speed: 1000
-                    }
-                },
-                toolbar: {
-                    show: false
-                },
-                zoom: {
-                    enabled: false
-                }
-            },
-            dataLabels: {
-                enabled: false
-            },
-            stroke: {
-                curve: "straight",
-                width: 5
-            },
-            grid: {
-                padding: {
-                    left: 0,
-                    right: 0
-                }
-            },
-            markers: {
-                size: 0,
-                hover: {
-                    size: 0
-                }
-            },
-            xaxis: {
-                type: "datetime",
-                range: 2700000
-            },
-            legend: {
-                show: false
-            },
-        };
-
-        chartGBP = new ApexCharts(document.querySelector("#chartGBP"), optionsGBP);
-        chartGBP.render();
-
-        updateChart();
-    });
-
+    updateChart();
 });
 
-function changeCurrency(el, choice) {
-    $('.currency-item').removeClass('active');
-    $(el).addClass('active');
+function updateChart() {
+    chartsList.forEach((el) => {
+        var id = el.id;
+        var ch = el.ch;
 
-    currencyOption = choice;
+        $.ajax({
+            type: "GET",
+            url: baseUrl + id + "/EUR",
+            headers: { "X-CoinAPI-Key": apiKey },
+            success: function (result) {
+                var date = new Date();
+                $("#" + id + "priceTextEUR").text(result.rate.toFixed(2) + " €");
 
-    if (choice == 0) {
-        $('#priceTextEUR').show();
-        $('#priceTextUSD').hide();
-        $('#priceTextGBP').hide();
+                ch.updateSeries([{
+                    data: [
+                        ...ch.w.config.series[0].data,
+                        [date.getTime(), result.rate]
+                    ]
+                }]);
 
-        $('chartEUR').show();
-        $('chartUSD').hide();
-        $('chartGBP').hide();
-    } else if (choice == 1) {
-        $('#priceTextEUR').hide();
-        $('#priceTextUSD').show();
-        $('#priceTextGBP').hide();
+            }
+        });
+    });
 
-        $('chartEUR').hide();
-        $('chartUSD').show();
-        $('chartGBP').hide();
-    } else if (choice == 2) {
-        $('#priceTextEUR').hide();
-        $('#priceTextUSD').hide();
-        $('#priceTextGBP').show();
+    setTimeout(function () { updateChart() }, 10000);
+}
 
-        $('chartEUR').hide();
-        $('chartUSD').hide();
-        $('chartGBP').show();
+function checkChanged(checkbox) {
+    if (checkbox.checked == true) {
+        $(checkbox).parent().addClass("is-checked");
+
+        cardsCount++;
+        $("#wrap").removeClass("empty");
+
+        if (checkbox.value == "BTC") createElement(checkbox.value, checkbox.name);
+        else if (checkbox.value == "ETH") createElement(checkbox.value, checkbox.name);
+        else if (checkbox.value == "DOGE") createElement(checkbox.value, checkbox.name);
+        else if (checkbox.value == "LTC") createElement(checkbox.value, checkbox.name);
+        else if (checkbox.value == "XRP") createElement(checkbox.value, checkbox.name);
+        else if (checkbox.value == "DASH") createElement(checkbox.value, checkbox.name);
+        else if (checkbox.value == "BCH") createElement(checkbox.value, checkbox.name);
+
+    } else {
+        $(checkbox).parent().removeClass("is-checked");
+
+        if (checkbox.value == "BTC") removeElement(checkbox.value);
+        else if (checkbox.value == "ETH") removeElement(checkbox.value);
+        else if (checkbox.value == "DOGE") removeElement(checkbox.value);
+        else if (checkbox.value == "LTC") removeElement(checkbox.value);
+        else if (checkbox.value == "XRP") removeElement(checkbox.value);
+        else if (checkbox.value == "DASH") removeElement(checkbox.value);
+        else if (checkbox.value == "BCH") removeElement(checkbox.value);
+
+        cardsCount--;
+        if (cardsCount == 0) $("#wrap").addClass("empty");
     }
 }
 
-function updateChart() {
-    $.getJSON("https://api.coindesk.com/v1/bpi/currentprice.json", function (data) {
-        var date = new Date();
+function createElement(id, title) {
+    var div = document.createElement("div");
+    div.id = id;
+    div.classList.add("element");
+    div.innerHTML = '<div class="container"><div class="data-container"><div><h1 class="title">' + title + '</h1></div><div><div id="' + id + 'priceTextEUR" class="price-text"></div></div></div><div id="' + id + '-chartEUR"></div></div>';
+    $("#wrap").append(div);
+    createChart(id);
+}
 
-        $('#priceTextEUR').text(data.bpi.EUR.rate_float.toFixed(2) + " €");
-        $('#priceTextUSD').text(data.bpi.USD.rate_float.toFixed(2) + " $");
-        $('#priceTextGBP').text(data.bpi.GBP.rate_float.toFixed(2) + " £");
+function removeElement(id) {
+    $("#" + id).remove();
+    chartsList = chartsList.filter(object => {
+        return object.id !== id;
+    });
+}
 
-        chartEUR.updateSeries([{
-            data: [
-                ...chartEUR.w.config.series[0].data,
-                [date.getTime(), data.bpi.EUR.rate_float]
-            ]
-        }]);
+function createChart(id) {
+    $.ajax({
+        type: "GET",
+        url: baseUrl + id + "/EUR",
+        headers: { "X-CoinAPI-Key": apiKey },
+        success: function (result) {
+            var date = new Date();
+            $("#" + id + "priceTextEUR").text(result.rate.toFixed(2) + " €");
 
-        chartUSD.updateSeries([{
-            data: [
-                ...chartUSD.w.config.series[0].data,
-                [date.getTime(), data.bpi.USD.rate_float]
-            ]
-        }]);
+            var options = {
+                series: [{
+                    name: id + "index",
+                    data: [[date.getTime(), result.rate]]
+                }],
+                chart: {
+                    height: 250,
+                    type: "line",
+                    stacked: true,
+                    animations: {
+                        enabled: true,
+                        easing: "linear",
+                        dynamicAnimation: {
+                            speed: 1000
+                        }
+                    },
+                    toolbar: {
+                        show: false
+                    },
+                    zoom: {
+                        enabled: false
+                    }
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    curve: "straight",
+                    width: 5
+                },
+                grid: {
+                    padding: {
+                        left: 0,
+                        right: 0
+                    }
+                },
+                markers: {
+                    size: 0,
+                    hover: {
+                        size: 0
+                    }
+                },
+                xaxis: {
+                    type: "datetime",
+                    range: 2700000
+                },
+                legend: {
+                    show: false
+                },
+            };
 
-        chartGBP.updateSeries([{
-            data: [
-                ...chartGBP.w.config.series[0].data,
-                [date.getTime(), data.bpi.GBP.rate_float]
-            ]
-        }]);
+            var chart = new ApexCharts(document.querySelector("#" + id + "-chartEUR"), options);
+            chart.render();
 
-        setTimeout(function () { updateChart() }, 10000);
+            chartsList.push({
+                id: id,
+                ch: chart
+            });
+        }
     });
 }

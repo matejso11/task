@@ -13,28 +13,38 @@
 </head>
 
 <body>
-    <div class="wrap">
-        <div class="container">
-            <div class="data-container">
-                <div>
-                    <h1 class="title">Bitcoin</h1>
-
-                    <div class="currency-container">
-                        <div class="currency-item active" onclick="changeCurrency(this,0)">EUR</div>
-                        <div class="currency-item" onclick="changeCurrency(this,1)">USD</div>
-                        <div class="currency-item" onclick="changeCurrency(this,2)">GBP</div>
-                    </div>
+    <div id="wrap" class="empty">
+        <div class="element nav-menu">
+            <div class="container">
+                <div class="nav-item">
+                    <input type="checkbox" id="crypto1" name="Bitcoin" value="BTC" onchange="checkChanged(this)">
+                    <label for="crypto1"> Bitcoin</label><br>
                 </div>
-                <div>
-                    <div id="priceTextEUR" class="price-text"></div>
-                    <div id="priceTextUSD" class="price-text"></div>
-                    <div id="priceTextGBP" class="price-text"></div>
+                <div class="nav-item">
+                    <input type="checkbox" id="crypto2" name="Etherium" value="ETH" onchange="checkChanged(this)">
+                    <label for="crypto2"> Etherium</label><br>
+                </div>
+                <div class="nav-item">
+                    <input type="checkbox" id="crypto3" name="Dodge" value="DOGE" onchange="checkChanged(this)">
+                    <label for="crypto3"> Dodge</label><br>
+                </div>
+                <div class="nav-item">
+                    <input type="checkbox" id="crypto4" name="Litecoin" value="LTC" onchange="checkChanged(this)">
+                    <label for="crypto4"> Litecoin</label><br>
+                </div>
+                <div class="nav-item">
+                    <input type="checkbox" id="crypto5" name="Ripple" value="XRP" onchange="checkChanged(this)">
+                    <label for="crypto5"> Ripple</label><br>
+                </div>
+                <div class="nav-item">
+                    <input type="checkbox" id="crypto6" name="Dash" value="DASH" onchange="checkChanged(this)">
+                    <label for="crypto6"> Dash</label><br>
+                </div>
+                <div class="nav-item">
+                    <input type="checkbox" id="crypto7" name="BitcoinCash" value="BCH" onchange="checkChanged(this)">
+                    <label for="crypto7"> Bitcoin cash</label><br>
                 </div>
             </div>
-
-            <div id="chartEUR"></div>
-            <div id="chartUSD"></div>
-            <div id="chartGBP"></div>
         </div>
     </div>
 </body>
